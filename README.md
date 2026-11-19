@@ -6,13 +6,13 @@
 
 Казковий сайт, на якому дитина пише лист Святому Миколаю, а лист приходить на пошту батькам.
 
-[![Netlify](https://img.shields.io/badge/Netlify-live-00C7B7?logo=netlify&logoColor=white)](https://santa-nicolas-letter.netlify.app)
+[![Netlify](https://img.shields.io/badge/Netlify-live-00C7B7?logo=netlify&logoColor=white)](https://lyst-mykolaiu.netlify.app)
 ![Node 22](https://img.shields.io/badge/Node-22-339933?logo=node.js&logoColor=white)
 ![Без фреймворків](https://img.shields.io/badge/frontend-vanilla%20JS-F7DF1E?logo=javascript&logoColor=black)
 ![iPhone](https://img.shields.io/badge/mobile--first-iPhone-000000?logo=apple&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[santa-nicolas-letter.netlify.app](https://santa-nicolas-letter.netlify.app)**
+**[lyst-mykolaiu.netlify.app](https://lyst-mykolaiu.netlify.app)**
 
 <img src="docs/screenshots/landing.png" width="200" alt="Головна сторінка">
 <img src="docs/screenshots/letter.png" width="200" alt="Лист">
