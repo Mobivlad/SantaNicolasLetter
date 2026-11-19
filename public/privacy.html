@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1640">
+  <title>Які дані збирає «Лист Святому Миколаю»</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Marck+Script&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .info { display: flex; flex-direction: column; justify-content: center; }
+    .info .paper-wrap { width: 100%; }
+    .info .greeting { margin-right: 0; }
+    .info .paper { font: 400 1rem/1.5 "Nunito", sans-serif; color: #3b2f4a; }
+    .info h3 { margin: 22px 0 8px; font: 800 1.05rem/1.3 "Nunito", sans-serif; color: #c8102e; }
+    .info p { margin: 0 0 10px; }
+    .info ul { margin: 0 0 10px; padding-left: 20px; }
+    .info li { margin: 4px 0; }
+    .flow { display: grid; gap: 10px; margin: 8px 0 6px; }
+    .step { display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 12px; background: rgba(255, 255, 255, .55); border: 2px dashed var(--line); }
+    .step .ico { flex: none; font-size: 1.6rem; line-height: 1; }
+    .step b { display: block; color: #1c3a8a; }
+    .data { width: 100%; border-collapse: collapse; font-size: .92rem; margin: 6px 0 10px; }
+    .data th, .data td { text-align: left; vertical-align: top; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+    .data th { font-weight: 800; color: #5b4a6e; }
+    .yes { color: #1f7a3a; font-weight: 800; }
+    .no { color: #8a7a66; }
+    .back { display: block; margin-top: 22px; text-align: center; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="moon" aria-hidden="true"></div>
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <main class="screen info">
+    <div class="paper-wrap">
+      <article class="paper">
+        <h2 class="greeting">Які дані ми збираємо 🔒</h2>
+        <p>Коротко: сайт збирає лише те, що потрібно, щоб лист дитини дійшов до вас на пошту. Дані посилань зберігаються зашифрованими лише до 31 січня. Ми не показуємо рекламу і не використовуємо дані для інших цілей.</p>
+
+        <h3>Шлях листа</h3>
+        <div class="flow">
+          <div class="step"><span class="ico">👩</span><div><b>1. Ви створюєте посилання</b>Вводите ім'я, прізвище, (необов'язково) вік і місто/село кожної дитини та свою пошту. Посилання приходять лише листом на цю пошту — так ми знаємо, що пошта ваша. Дані зберігаються на сервері зашифрованими (AES-256) до 31 січня, а потім автоматично видаляються; саме посилання містить лише короткий випадковий код.</div></div>
+          <div class="step"><span class="ico">🧒</span><div><b>2. Дитина відкриває посилання</b>Сайт розшифровує і показує дитині лише ім'я, вік і місто/село. Прізвище й вашу пошту дитина не бачить.</div></div>
+          <div class="step"><span class="ico">✍️</span><div><b>3. Дитина пише лист</b>Чернетка тимчасово зберігається лише в браузері на пристрої дитини, щоб не загубилась, і видаляється після надсилання.</div></div>
+          <div class="step"><span class="ico">✉️</span><div><b>4. Лист надсилається вам</b>Сервер (Netlify) одразу пересилає лист через Gmail на вашу пошту, а резервну копію без прізвища — адміністратору сайту (на випадок, якщо ваш лист загубиться). Сам лист сервер не зберігає. Одне посилання — один лист: після надсилання посилання більше не діє.</div></div>
+        </div>
+
+        <h3>Що куди потрапляє</h3>
+        <table class="data">
+          <thead><tr><th>Дані</th><th>Бачить дитина</th><th>У листі вам</th></tr></thead>
+          <tbody>
+            <tr><td>Ім'я</td><td class="yes">так</td><td class="yes">так</td></tr>
+            <tr><td>Прізвище</td><td class="no">ні</td><td class="yes">так</td></tr>
+            <tr><td>Вік</td><td class="yes">так</td><td class="yes">так</td></tr>
+            <tr><td>Місто / село</td><td class="yes">так</td><td class="yes">так</td></tr>
+            <tr><td>Список бажань</td><td class="yes">так</td><td class="yes">так</td></tr>
+            <tr><td>«Про себе» (необов'язково)</td><td class="yes">так</td><td class="yes">так</td></tr>
+            <tr><td>Ваша пошта</td><td class="no">ні</td><td class="yes">одержувач</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Де можуть залишитися дані</h3>
+        <ul>
+          <li><b>Ваша поштова скринька</b>: сам лист.</li>
+          <li><b>Скринька адміністратора сайту</b>: резервна копія листа (без прізвища дитини і без вашої пошти), щоб лист не загубився. Її не використовують ні для чого іншого.</li>
+          <li><b>Скринька Gmail, з якої сайт надсилає листи</b>: Gmail автоматично зберігає копію в папці «Надіслані».</li>
+          <li><b>Посилання</b>: той, хто має посилання дитини, побачить її ім'я, вік і місто/село. Тому діліться ним лише з дитиною.</li>
+          <li><b>Сервер сайту</b>: зашифровані дані посилань (ім'я, прізвище, вік, місто/село дитини і ваша пошта) — до 31 січня, потім вони автоматично видаляються. Для лімітів (не більше 3 листів із посиланнями і 10 листів дітей на одну пошту на добу) — лише зашифрований відбиток (хеш) пошти, який видаляється наступного дня. Ще сервер рахує, скільки створено посилань і надіслано листів — це лише числа, без імен і адрес.</li>
+          <li><b>Ваш браузер</b> пам'ятає вашу пошту, щоб вам не вводити її щоразу, а заповнену форму — лише доки відкрита вкладка.</li>
+        </ul>
+
+        <h3>Чого ми не робимо</h3>
+        <ul>
+          <li>не збираємо точну адресу, телефон чи фото;</li>
+          <li>не використовуємо файли cookie для стеження чи аналітики;</li>
+          <li>не продаємо й не передаємо дані третім особам для інших цілей.</li>
+        </ul>
+
+        <h3>Сервіси, через які працює сайт</h3>
+        <ul>
+          <li><b>Netlify</b> — хостинг сайту і сервер, який надсилає листи та зберігає зашифровані дані посилань;</li>
+          <li><b>Gmail</b> — поштова скринька, з якої надсилаються листи;</li>
+          <li><b>Google Fonts</b> — шрифти: браузер завантажує їх із серверів Google (як і на більшості сайтів).</li>
+        </ul>
+
+        <h3>Питання чи помилки</h3>
+        <p>Якщо щось не працює або лист не дійшов, напишіть на <a class="mail" data-u="vladyslav.daliavskyi" data-d="gmail.com" href="#">пошту</a>.</p>
+
+        <button type="button" class="btn btn-red back" id="back">← Назад</button>
+      </article>
+    </div>
+  </main>
+
+  <script src="sky.js"></script>
+  <script>
+    // No links to the parents' page: a child may land here from the letter
+    document.getElementById("back").addEventListener("click", () => {
+      let fromSite = false;
+      try { fromSite = new URL(document.referrer).origin === location.origin; } catch (e) { /* no referrer */ }
+      if (fromSite && history.length > 1) history.back();
+      else location.href = "./";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1a3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Лист Миколаю">
+  <meta name="description" content="Напиши лист Святому Миколаю!">
+  <title>Лист Святому Миколаю</title>
+  <link rel="icon" href="nicholas.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Marck+Script&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="moon" aria-hidden="true"></div>
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <svg class="hills" viewBox="-1800 0 4800 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="gold" x1="0" x2="1">
+        <stop offset="0" stop-color="#fff0b8"/><stop offset=".45" stop-color="#f5c45a"/><stop offset="1" stop-color="#b37a18"/>
+      </linearGradient>
+      <radialGradient id="halo">
+        <stop offset="0" stop-color="#ffd98a" stop-opacity=".5"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/>
+      </radialGradient>
+      <!-- side scenery (x -600..1200) for wide screens; edges at x=1200 match the centre scene -->
+      <g id="side">
+        <path d="M-600 160 Q-300 130 0 150 T600 140 C780 122 1050 175 1200 175 V300 H-600Z" fill="#9fb6dd" opacity=".45"/>
+        <g fill="#16324f">
+          <polygon points="-100,150 -120,192 -80,192"/><polygon points="-100,134 -116,170 -84,170"/>
+          <polygon points="700,142 678,192 722,192"/><polygon points="700,126 682,166 718,166"/>
+          <polygon points="1100,160 1084,196 1116,196"/>
+        </g>
+        <rect x="196" y="160" width="8" height="18" fill="#3b2a3f"/>
+        <rect x="140" y="186" width="66" height="44" fill="#3b2a3f"/>
+        <polygon points="130,188 173,157 216,188" fill="#f4f8ff"/>
+        <rect class="win w2" x="152" y="198" width="13" height="13" fill="#ffd36b"/>
+        <rect class="win" x="180" y="198" width="13" height="13" fill="#ffd36b"/>
+        <rect x="922" y="150" width="8" height="18" fill="#432f3a"/>
+        <rect x="880" y="176" width="60" height="48" fill="#432f3a"/>
+        <polygon points="870,178 910,148 950,178" fill="#f4f8ff"/>
+        <rect class="win w3" x="892" y="188" width="13" height="13" fill="#ffd36b"/>
+        <rect x="915" y="194" width="13" height="28" fill="#2a1d25"/>
+        <g fill="#dfe6f7">
+          <circle class="smoke s3" cx="200" cy="154" r="5"/><circle class="smoke" cx="200" cy="154" r="5"/>
+          <circle class="smoke s2" cx="926" cy="144" r="5"/><circle class="smoke s3" cx="926" cy="144" r="5"/>
+        </g>
+        <path d="M-600 226 Q-300 212 0 222 T600 214 C780 203 1050 232 1200 232 V300 H-600Z" fill="#e8f0ff"/>
+        <g fill="#0f2a40">
+          <polygon points="-300,196 -322,238 -278,238"/><polygon points="-300,178 -316,214 -284,214"/>
+          <polygon points="420,192 396,242 444,242"/><polygon points="420,172 401,214 439,214"/><polygon points="420,155 406,188 434,188"/>
+          <polygon points="1040,190 1020,232 1060,232"/><polygon points="1040,173 1024,208 1056,208"/>
+        </g>
+        <circle class="tl" cx="413" cy="180" r="2.5" fill="#ff4d6d"/><circle class="tl t2" cx="428" cy="198" r="2.5" fill="#6bc7ff"/>
+        <circle class="tl t3" cx="410" cy="214" r="2.5" fill="#ffd36b"/><circle class="tl" cx="432" cy="230" r="2.5" fill="#5dffa0"/>
+        <path d="M-600 258 Q-300 246 0 256 T600 250 C780 240 1050 262 1200 262 V300 H-600Z" fill="#ffffff"/>
+        <circle class="glint g3" cx="-200" cy="262" r="1.6" fill="#fff"/><circle class="glint" cx="700" cy="262" r="1.6" fill="#fff"/>
+      </g>
+    </defs>
+    <use href="#side" transform="translate(-1200 0)"/>
+    <use href="#side" transform="matrix(-1 0 0 1 2400 0)"/>
+    <path d="M0 175 C100 175 310 140 420 160 Q640 200 800 150 C896 120 1100 175 1200 175 V300 H0Z" fill="#9fb6dd" opacity=".45"/>
+    <g fill="#16324f">
+      <polygon points="130,150 110,190 150,190"/><polygon points="130,135 114,170 146,170"/>
+      <polygon points="300,160 284,192 316,192"/>
+      <polygon points="900,140 875,190 925,190"/><polygon points="900,122 880,165 920,165"/>
+      <polygon points="1090,130 1070,175 1110,175"/>
+    </g>
+    <ellipse class="halo" cx="600" cy="140" rx="170" ry="120" fill="url(#halo)"/>
+
+    <!-- church with golden domes -->
+    <g>
+      <rect x="526" y="162" width="30" height="52" fill="#c3cbe6"/>
+      <rect x="644" y="162" width="30" height="52" fill="#aeb8da"/>
+      <rect x="556" y="150" width="88" height="64" fill="#cdd5ee"/>
+      <rect x="616" y="150" width="28" height="64" fill="#b9c2e0"/>
+      <polygon points="550,153 600,132 650,153" fill="#f4f8ff"/>
+      <rect x="584" y="112" width="32" height="30" fill="#cdd5ee"/>
+      <rect x="604" y="112" width="12" height="30" fill="#b9c2e0"/>
+      <rect x="520" y="160" width="42" height="5" rx="2" fill="#f4f8ff"/>
+      <rect x="638" y="160" width="42" height="5" rx="2" fill="#f4f8ff"/>
+      <path d="M577 114 C577 96 592 90 600 70 C608 90 623 96 623 114Z" fill="url(#gold)"/>
+      <path d="M526 164 C526 152 536 148 541 134 C546 148 556 152 556 164Z" fill="url(#gold)"/>
+      <path d="M644 164 C644 152 654 148 659 134 C664 148 674 152 674 164Z" fill="url(#gold)"/>
+      <g stroke="#f5c45a" stroke-width="2.4" stroke-linecap="round">
+        <path d="M600 70 V48 M593 56 H607 M595 63 L605 60"/>
+        <path d="M541 134 V118 M536 124 H546"/>
+        <path d="M659 134 V118 M654 124 H664"/>
+      </g>
+      <g fill="#ffd36b">
+        <path class="win" d="M570 188 V173 A5 5 0 0 1 580 173 V188Z"/>
+        <path class="win w2" d="M620 188 V173 A5 5 0 0 1 630 173 V188Z"/>
+        <path class="win w3" d="M592 138 V125 A4 4 0 0 1 600 125 V138Z"/>
+        <path class="win" d="M603 138 V125 A4 4 0 0 1 611 125 V138Z"/>
+        <path class="win w2" d="M536 192 V180 A5 5 0 0 1 546 180 V192Z"/>
+        <path class="win w3" d="M654 192 V180 A5 5 0 0 1 664 180 V192Z"/>
+        <path d="M592 214 V194 A8 8 0 0 1 608 194 V214Z" fill="#ffc35a"/>
+      </g>
+      <circle class="glint" cx="592" cy="98" r="2.2" fill="#fff"/>
+      <circle class="glint g2" cx="536" cy="152" r="1.8" fill="#fff"/>
+      <circle class="glint g3" cx="654" cy="152" r="1.8" fill="#fff"/>
+    </g>
+
+    <!-- houses with smoking chimneys -->
+    <g>
+      <rect x="430" y="148" width="8" height="18" fill="#3b2a3f"/>
+      <rect x="368" y="174" width="64" height="40" fill="#3b2a3f"/>
+      <polygon points="358,176 400,146 442,176" fill="#f4f8ff"/>
+      <rect class="win" x="380" y="186" width="13" height="13" fill="#ffd36b"/>
+      <rect class="win w2" x="408" y="186" width="13" height="13" fill="#ffd36b"/>
+      <rect x="772" y="154" width="8" height="18" fill="#432f3a"/>
+      <rect x="760" y="180" width="70" height="42" fill="#432f3a"/>
+      <polygon points="750,182 795,150 840,182" fill="#f4f8ff"/>
+      <rect class="win w3" x="770" y="192" width="14" height="14" fill="#ffd36b"/>
+      <rect x="795" y="198" width="14" height="24" fill="#2a1d25"/>
+      <rect class="win" x="815" y="192" width="11" height="14" fill="#ffd36b"/>
+    </g>
+    <g fill="#dfe6f7">
+      <circle class="smoke" cx="434" cy="142" r="5"/><circle class="smoke s2" cx="434" cy="142" r="5"/><circle class="smoke s3" cx="434" cy="142" r="5"/>
+      <circle class="smoke s2" cx="776" cy="148" r="5"/><circle class="smoke s3" cx="776" cy="148" r="5"/><circle class="smoke" cx="776" cy="148" r="5"/>
+    </g>
+
+    <path d="M0 232 C150 232 420 201 600 208 C780 215 1050 232 1200 232 V300 H0Z" fill="#e8f0ff"/>
+
+    <!-- fir trees with lights -->
+    <g fill="#0f2a40">
+      <polygon points="480,190 455,240 505,240"/><polygon points="480,170 460,212 500,212"/><polygon points="480,152 465,185 495,185"/>
+      <polygon points="720,192 698,234 742,234"/><polygon points="720,175 702,212 738,212"/><polygon points="720,160 707,190 733,190"/>
+      <polygon points="1010,185 990,228 1030,228"/><polygon points="1010,168 994,203 1026,203"/>
+    </g>
+    <g>
+      <circle class="tl" cx="472" cy="176" r="2.6" fill="#ff4d6d"/><circle class="tl t2" cx="487" cy="194" r="2.6" fill="#ffd36b"/>
+      <circle class="tl t3" cx="468" cy="208" r="2.6" fill="#6bc7ff"/><circle class="tl" cx="492" cy="222" r="2.6" fill="#5dffa0"/>
+      <circle class="tl t2" cx="466" cy="234" r="2.6" fill="#d58bff"/><circle class="tl t3" cx="482" cy="232" r="2.6" fill="#ff4d6d"/>
+      <circle class="tl t3" cx="714" cy="184" r="2.4" fill="#ffd36b"/><circle class="tl" cx="728" cy="200" r="2.4" fill="#ff4d6d"/>
+      <circle class="tl t2" cx="710" cy="214" r="2.4" fill="#5dffa0"/><circle class="tl t3" cx="732" cy="228" r="2.4" fill="#6bc7ff"/>
+    </g>
+    <circle class="star-top" cx="480" cy="150" r="5" fill="#ffd36b"/>
+    <path d="M0 262 C150 262 420 247 600 260 C780 273 1050 262 1200 262 V300 H0Z" fill="#ffffff"/>
+    <g fill="#fff">
+      <circle class="glint" cx="380" cy="262" r="1.6"/><circle class="glint g2" cx="560" cy="270" r="1.6"/>
+      <circle class="glint g3" cx="690" cy="266" r="1.6"/><circle class="glint g2" cx="830" cy="268" r="1.6"/>
+    </g>
+  </svg>
+
+  <button id="musicBtn" class="music-btn" type="button" aria-label="Вимкнути музику" aria-pressed="true" hidden>🔔</button>
+
+  <!-- Screen 1: intro -->
+  <section id="intro" class="screen intro">
+    <div class="envelope" id="envelope">
+      <div class="env-back"></div>
+      <div class="env-letter"><span>Дорогий<br>Святий Миколаю…</span></div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal"><img src="nicholas.svg" alt=""></div>
+    </div>
+    <h1 class="title">Лист Святому&nbsp;Миколаю</h1>
+    <p class="subtitle">Святий Миколай уже читає листи від дітей.<br>Напиши й ти свій!</p>
+    <button id="openBtn" class="btn btn-red" type="button">Відкрити лист ✨</button>
+    <p class="hint">🎵 зі святковою мелодією</p>
+  </section>
+
+  <!-- Screen 2: letter -->
+  <main id="letterScreen" class="screen letter-screen" hidden>
+    <div class="paper-wrap" id="paperWrap">
+      <form id="letter" class="paper" novalidate autocomplete="on">
+        <div class="stamp" aria-hidden="true"><span><img src="nicholas.svg" alt=""></span></div>
+        <h2 class="greeting">Дорогий Святий Миколаю!</h2>
+
+        <div class="field" data-field="name">
+          <label for="name">Мене звати</label>
+          <input id="name" name="name" type="text" autocomplete="given-name" maxlength="60"
+                 placeholder="Твоє ім'я" enterkeyhint="next">
+        </div>
+
+        <div class="field-row">
+          <div class="field field-age" data-field="age">
+            <label for="age">Мені років</label>
+            <input id="age" name="age" type="text" inputmode="numeric" maxlength="2"
+                   placeholder="напр. 7" autocomplete="off" enterkeyhint="next">
+          </div>
+          <div class="field field-city" data-field="city">
+            <label for="city">Я живу (місто / село)</label>
+            <input id="city" name="city" type="text" maxlength="100" autocomplete="address-level2"
+                   placeholder="Наприклад: Львів" enterkeyhint="next">
+          </div>
+        </div>
+
+        <div class="field" data-field="about">
+          <label for="about">Про себе</label>
+          <textarea id="about" name="about" rows="2" maxlength="600"
+                    placeholder="Розкажи про себе..."></textarea>
+        </div>
+
+        <div class="field" data-field="wishes">
+          <label id="wishesLabel">Цього року я дуже хочу:</label>
+          <ul id="wishes" class="wishes" aria-labelledby="wishesLabel"></ul>
+          <button type="button" id="addWish" class="btn-link">+ додати бажання</button>
+        </div>
+
+        <p class="sign">З любов'ю, <span id="signName">…</span></p>
+
+        <label class="check" data-field="good">
+          <input type="checkbox" id="good" name="good">
+          <span class="box" aria-hidden="true"></span>
+          <span class="check-text">Підтверджую, що я був чемним / була чемною весь рік 😇</span>
+        </label>
+
+        <!-- honeypot against bots -->
+        <input type="checkbox" name="botcheck" id="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <p id="formError" class="form-error" role="alert" aria-live="polite"></p>
+
+        <button type="submit" class="btn btn-red btn-send" id="sendBtn">Надіслати листа ✉️</button>
+        <p class="privacy"><a href="privacy.html">🔒 Для батьків</a></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- Screen 3: sent -->
+  <section id="sent" class="screen sent" hidden>
+    <div class="sent-env" aria-hidden="true">✉️<i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <h2 class="title">Лист уже летить!</h2>
+    <p class="subtitle">Святий Миколай отримає твого листа,<br><b id="sentName"></b>. Залишайся чемною дитиною і далі! ⭐</p>
+    <button id="againBtn" class="btn btn-gold" type="button">Написати ще один лист</button>
+  </section>
+
+  <script src="config.js"></script>
+  <script src="sky.js"></script>
+  <script src="music.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

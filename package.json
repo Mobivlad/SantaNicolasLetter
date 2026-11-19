@@ -1,0 +1,13 @@
+{
+  "name": "santa-nicolas-letter",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.9",
+    "nodemailer": "^10.6.0"
+  }
+}

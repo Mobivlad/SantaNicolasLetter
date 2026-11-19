@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1a3a">
+  <meta name="robots" content="noindex">
+  <title>Посилання на лист Святому Миколаю</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Marck+Script&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .gen { display: flex; flex-direction: column; justify-content: center; }
+    .gen .paper-wrap { width: 100%; }
+    .gen .greeting { margin-right: 0; }
+    .gen p.note { margin: 0 0 18px; color: #5b4a6e; line-height: 1.45; }
+    .link-box {
+      margin: 6px 0 16px; padding: 12px 14px;
+      border-radius: 10px; border: 2px dashed var(--line);
+      background: rgba(255, 255, 255, .6);
+      font: 700 1rem/1.4 "Nunito", sans-serif; color: #1c3a8a;
+      word-break: break-all; user-select: all; -webkit-user-select: all;
+    }
+    .actions { display: grid; gap: 14px; }
+    .actions .btn { width: 100%; }
+    .btn-green { color: #fff; background: linear-gradient(180deg, #2e9a4f, var(--green)); box-shadow: 0 6px 0 #135226, 0 10px 24px rgba(31, 122, 58, .35); }
+    .status { min-height: 1.4em; margin: 12px 0 0; text-align: center; font-weight: 800; color: var(--green); }
+    .notice { margin-top: 18px; padding: 12px 14px; border-radius: 10px; line-height: 1.45; font-size: .95rem; }
+    .notice b { word-break: break-all; }
+    .notice.ok { background: #e4f5e8; color: #135226; border: 2px solid #9fd6ad; }
+    .notice.warn { background: #fff4d6; color: #6b4a00; border: 2px solid #f0c75e; }
+    .error { min-height: 1.2em; margin: 0 0 8px; color: var(--red); font-weight: 800; }
+    .opt { font-weight: 400; color: #6b5d4c; }
+    .hint { margin: 6px 0 0; font-size: .85rem; line-height: 1.4; color: #6b5d4c; }
+    .check.consent { font-weight: 400; font-size: .92rem; margin: 4px 0 14px; }
+    .check.consent .box::after { content: "✓"; color: var(--green); font-weight: 800; }
+    .check.consent a, .note a { color: #1c3a8a; font-weight: 800; }
+    #create { padding-inline: 16px; white-space: nowrap; }
+    #create:disabled { opacity: .6; filter: saturate(.5); cursor: default; transform: none; }
+    #create:disabled::after { animation: none; opacity: 0; }
+    #create.is-sent { opacity: 1; filter: none; color: #fff; background: linear-gradient(180deg, #2e9a4f, var(--green)); box-shadow: 0 6px 0 #135226, 0 10px 24px rgba(31, 122, 58, .35); }
+    .paper input[type="email"] { font-family: "Nunito", sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .kid-err { margin: -6px 0 10px; color: var(--red); font-weight: 800; font-size: .92rem; }
+    .heard { margin: -4px 0 14px; padding: 8px 12px; border-radius: 999px; text-align: center; font-weight: 800; color: #6b4a00; background: #fff4d6; border: 2px solid #f0c75e; }
+    .heard b { color: var(--red); }
+    /* children: horizontal swipe, next card peeks out */
+    .kids {
+      position: relative; display: flex; gap: 12px; margin: 0 -8px; padding: 4px 8px 8px;
+      overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 8px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none; overscroll-behavior-x: contain;
+    }
+    .kids::-webkit-scrollbar { display: none; }
+    .kid {
+      flex: 0 0 calc(100% - 30px); min-width: 0; scroll-snap-align: start;
+      padding: 10px 14px 0; border: 2px dashed var(--line); border-radius: 14px;
+      background: rgba(255, 255, 255, .55); animation: pop .3s ease both;
+    }
+    .kid:only-child { flex-basis: 100%; }
+    .kid.invalid { border-color: var(--red); }
+    .kid-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; margin-bottom: 4px; }
+    .kid-title { font-weight: 800; color: var(--red); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .kid .field { margin-bottom: 12px; }
+    .kid:only-child .kid-del { visibility: hidden; }
+    .dots { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 18px; margin: 6px 0 4px; }
+    .dots button { position: relative; width: 10px; height: 10px; padding: 0; border: 0; border-radius: 6px; background: #c9b48a; cursor: pointer; transition: width .2s, background .2s; }
+    .dots button::before { content: ""; position: absolute; inset: -8px -5px; } /* bigger tap area */
+    .dots button.on { width: 24px; background: var(--red); }
+    .add-kid { display: block; margin: 0 auto 6px; }
+    .kid-link { margin: 16px 0 0; padding: 12px 14px; border: 2px dashed var(--line); border-radius: 14px; background: rgba(255, 255, 255, .55); }
+    .kid-link .kid-title { display: block; font-size: 1.1rem; }
+    .kid-link .link-box { margin: 6px 0 12px; }
+    .kid-link .actions { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kid-link .actions .btn { padding-left: 8px; padding-right: 8px; font-size: 1rem; }
+    .kid-link .actions .wide { grid-column: 1 / -1; text-align: center; text-decoration: none; display: block; }
+    .kid-link .status { margin-top: 8px; min-height: 0; }
+  </style>
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="moon" aria-hidden="true"></div>
+  <canvas id="sky" aria-hidden="true"></canvas>
+
+  <main class="screen gen">
+    <div class="paper-wrap">
+      <form class="paper" id="gen" novalidate>
+        <h2 class="greeting">Іменне посилання</h2>
+        <p class="heard" id="heard" hidden></p>
+
+        <div id="formPart">
+          <p class="note">Для батьків: додайте дітей і вкажіть свою пошту. Ми надішлемо на неї лист із посиланням для кожної дитини. Дитина відкриє своє посилання, її ім'я вже буде вписане, а лист Святому Миколаю прийде вам.</p>
+
+          <div class="kids" id="kids" aria-label="Діти"></div>
+          <div class="dots" id="dots"></div>
+          <button type="button" class="btn-link add-kid" id="addKid">Ще дитина ➕</button>
+          <p class="hint" style="margin:0 0 18px">Вік і місто необов'язкові. Якщо вкажете, дитина не зможе їх змінити; якщо ні, впише сама. Прізвище буде лише в листі на вашу пошту.</p>
+
+          <div class="field">
+            <label for="email">Ваша пошта (сюди прийдуть посилання і листи дітей)</label>
+            <input id="email" type="email" maxlength="120" placeholder="mama@gmail.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+          </div>
+
+          <label class="check consent" id="consentBox">
+            <input type="checkbox" id="consent">
+            <span class="box" aria-hidden="true"></span>
+            <span class="check-text">Я погоджуюся, що дані дитини (ім'я, прізвище, вік, місто, бажання) використовуються лише для листа на мою пошту; копія без прізвища йде адміністратору сайту. Дані зберігаються зашифрованими до 31 січня. <a href="privacy.html">Детальніше</a></span>
+          </label>
+
+          <p class="error" id="genError" role="alert"></p>
+          <div class="actions">
+            <button type="submit" class="btn btn-red" id="create">Надіслати посилання ✉️</button>
+          </div>
+          <div class="notice" id="notice" role="status" hidden></div>
+        </div>
+
+        <div id="linksPart" hidden>
+          <div class="notice ok" id="linksNotice"></div>
+          <div id="linksList"></div>
+          <div class="actions" style="margin-top:20px">
+            <button type="button" class="btn-link" id="newLinks">Створити нові посилання ➕</button>
+          </div>
+        </div>
+
+        <p class="privacy contact">Щось не працює? Напишіть нам: <a class="mail" data-u="vladyslav.daliavskyi" data-d="gmail.com" href="#">пошта</a></p>
+      </form>
+    </div>
+  </main>
+
+  <script src="sky.js"></script>
+  <script>
+    (function () {
+      const MAX_KIDS = 5;
+      const $ = (id) => document.getElementById(id);
+      const kidsEl = $("kids"), dotsEl = $("dots"), addBtn = $("addKid");
+      const emailEl = $("email"), consentEl = $("consent"), consentBox = $("consentBox");
+      const errEl = $("genError"), createBtn = $("create"), noticeEl = $("notice");
+      const formPart = $("formPart"), linksPart = $("linksPart");
+      const base = new URL("./", location.href).href; // folder of the site, works on any host
+      const EMAIL_RE = /^[A-Za-z0-9._%+-]{1,64}@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,24}$/; // same as the server
+      const CREATE_TEXT = createBtn.textContent;
+      let shown = null; // notice under the form: { email, n }
+      let view = null;  // links page: { email, kids: [{name, id}] }
+      let seq = 0;
+      let leaving = false; // the page is handed over to a child: keep nothing
+
+      async function api(path, body) {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 20000);
+        try {
+          const res = await fetch(path, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+            signal: ctrl.signal
+          });
+          const json = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+          return json;
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      /* ---- children carousel ---- */
+      const cards = () => [...kidsEl.children];
+      const kidData = (card) => Object.fromEntries([...card.querySelectorAll("input")].map((i) => [i.dataset.k, i.value.trim()]));
+
+      function activeIndex() {
+        const first = kidsEl.firstElementChild;
+        return first ? Math.round(kidsEl.scrollLeft / (first.offsetWidth + 12)) : 0;
+      }
+
+      function scrollToCard(card, smooth = true) {
+        kidsEl.scrollTo({ left: card.offsetLeft - 8, behavior: smooth ? "smooth" : "auto" });
+      }
+
+      function refresh() {
+        const list = cards();
+        list.forEach((card, i) => {
+          card.querySelector(".kid-title").textContent = "🧒 " + (card.querySelector('[data-k="name"]').value.trim() || `Дитина ${i + 1}`);
+          card.setAttribute("aria-label", `Дитина ${i + 1} з ${list.length}`);
+        });
+        const on = Math.min(activeIndex(), list.length - 1);
+        dotsEl.textContent = "";
+        if (list.length > 1) list.forEach((card, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = i === on ? "on" : "";
+          b.setAttribute("aria-label", `Дитина ${i + 1}`);
+          b.addEventListener("click", () => scrollToCard(card));
+          dotsEl.append(b);
+        });
+        addBtn.disabled = list.length >= MAX_KIDS;
+        addBtn.textContent = list.length >= MAX_KIDS ? `Не більше ${MAX_KIDS} дітей` : "Ще дитина ➕";
+      }
+
+      function addKid(d = {}, scroll = true) {
+        const u = ++seq;
+        const card = document.createElement("section");
+        card.className = "kid";
+        card.innerHTML = `
+          <div class="kid-head"><span class="kid-title"></span><button type="button" class="wish-del kid-del" aria-label="Прибрати дитину">×</button></div>
+          <div class="field"><label for="n${u}">Ім'я дитини</label><input id="n${u}" data-k="name" type="text" maxlength="60" placeholder="Наприклад: Оленка" autocomplete="off" enterkeyhint="next"></div>
+          <div class="field"><label for="s${u}">Прізвище дитини</label><input id="s${u}" data-k="surname" type="text" maxlength="60" placeholder="Наприклад: Коваленко" autocomplete="off" enterkeyhint="next"></div>
+          <div class="field-row">
+            <div class="field field-age"><label for="a${u}">Вік</label><input id="a${u}" data-k="age" type="text" inputmode="numeric" maxlength="2" placeholder="напр. 7" autocomplete="off" enterkeyhint="next"></div>
+            <div class="field field-city"><label for="c${u}">Місто / Село</label><input id="c${u}" data-k="city" type="text" maxlength="100" placeholder="напр. Львів" autocomplete="address-level2" enterkeyhint="next"></div>
+          </div>`;
+        card.querySelectorAll("input").forEach((i) => {
+          i.value = d[i.dataset.k] || "";
+          i.addEventListener("input", () => {
+            card.classList.remove("invalid");
+            i.closest(".field").classList.remove("invalid");
+            card.querySelector(".kid-err")?.remove();
+            hideNotice();
+            if (i.dataset.k === "name") refresh();
+          });
+          // Enter goes to the next field instead of sending the form half-filled
+          i.addEventListener("keydown", (e) => {
+            if (e.key !== "Enter" || e.isComposing) return;
+            e.preventDefault();
+            const all = [...kidsEl.querySelectorAll("input"), emailEl];
+            const next = all[all.indexOf(i) + 1];
+            if (next.closest(".kid") && next.closest(".kid") !== card) scrollToCard(next.closest(".kid"));
+            next.focus({ preventScroll: !!next.closest(".kid") });
+          });
+        });
+        card.querySelector(".kid-del").addEventListener("click", () => {
+          if (cards().length < 2) return;
+          card.remove();
+          hideNotice();
+          refresh();
+        });
+        kidsEl.append(card);
+        refresh();
+        if (scroll) {
+          scrollToCard(card);
+          card.querySelector("input").focus({ preventScroll: true });
+        }
+      }
+
+      let scrollTimer;
+      kidsEl.addEventListener("scroll", () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(refresh, 60);
+      }, { passive: true });
+      addBtn.addEventListener("click", () => { if (cards().length < MAX_KIDS) addKid(); });
+
+      /* ---- notices ---- */
+      function showNotice(email, n, restoring) {
+        shown = { email, n };
+        const b = document.createElement("b");
+        b.textContent = email;
+        noticeEl.textContent = "";
+        noticeEl.className = "notice ok";
+        noticeEl.append(`📩 Ми надіслали лист ${n > 1 ? `з посиланнями для ${n} дітей` : "з посиланням"} на `, b,
+          n > 1
+            ? ". Відкрийте його й надішліть кожній дитині її посилання (там є кнопка «Поділитися посиланнями»)."
+            : ". Відкрийте його й надішліть посилання дитині (там є кнопка «Поділитися посиланням»).",
+          " Не бачите листа? Перевірте «Спам» або «Промоакції» і натисніть «Не спам».");
+        noticeEl.hidden = false;
+        // Locked until the form changes: a second click would create a second set of links
+        createBtn.disabled = true;
+        createBtn.classList.add("is-sent");
+        createBtn.textContent = "Надіслано ✅";
+        if (!restoring) noticeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      function hideNotice() {
+        if (shown) {
+          createBtn.disabled = false;
+          createBtn.classList.remove("is-sent");
+          createBtn.textContent = CREATE_TEXT;
+        }
+        noticeEl.hidden = true;
+        shown = null;
+        errEl.textContent = "";
+      }
+
+      async function copy(text) {
+        try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* fallback below */ }
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.setAttribute("readonly", "");
+        ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        let ok = false;
+        try { ok = document.execCommand("copy"); } catch (e) { /* ignore */ }
+        ta.remove();
+        return ok;
+      }
+
+      /* ---- links page (opened from the email: link.html?c=<id>) ---- */
+      function showLinks(v) {
+        view = v;
+        const b = document.createElement("b");
+        b.textContent = v.email;
+        const notice = $("linksNotice");
+        notice.textContent = "";
+        notice.append("✅ Пошту підтверджено! Листи дітей приходитимуть на ", b,
+          `. Надішліть ${v.kids.length > 1 ? "кожній дитині її посилання" : "посилання дитині"}. Листи надходитимуть від відправника «Святий Миколай»; якщо їх немає у «Вхідних», перевірте «Спам».`);
+        const list = $("linksList");
+        list.textContent = "";
+        v.kids.forEach(({ name, id, used }) => {
+          const url = `${base}?l=${id}`;
+          const box = document.createElement("div");
+          box.className = "kid-link";
+          if (used) {
+            box.innerHTML = `<span class="kid-title"></span><p class="hint">✅ Лист уже надіслано Святому Миколаю. Це посилання більше не діє.</p>`;
+            box.querySelector(".kid-title").textContent = "🧒 " + name;
+            list.append(box);
+            return;
+          }
+          box.innerHTML = `<span class="kid-title"></span><div class="link-box"></div>
+            <div class="actions">
+              <button type="button" class="btn btn-red share" hidden>Поділитися 📤</button>
+              <button type="button" class="btn btn-green copy">Скопіювати 📋</button>
+              <a class="btn btn-gold wide open" href="">Відкрити лист <img class="nico" src="nicholas.svg" alt=""></a>
+            </div><p class="status" role="status"></p>`;
+          box.querySelector(".kid-title").textContent = "🧒 " + name;
+          box.querySelector(".link-box").textContent = url;
+          const status = box.querySelector(".status");
+          box.querySelector(".copy").addEventListener("click", async () => {
+            status.textContent = (await copy(url)) ? "Скопійовано ✅" : "Виділіть посилання і скопіюйте вручну";
+          });
+          const share = box.querySelector(".share");
+          if (navigator.share) {
+            share.hidden = false;
+            share.addEventListener("click", () => {
+              navigator.share({ title: "Лист Святому Миколаю", text: `${name}, напиши лист Святому Миколаю! ✨🎁`, url }).catch(() => {});
+            });
+          } else {
+            box.querySelector(".copy").classList.add("wide");
+          }
+          // Same tab, replacing this page in history: the child must never get "Back" to this page.
+          // The saved page (with siblings' links and the parent's email) is dropped as well.
+          const open = box.querySelector(".open");
+          open.href = url;
+          open.addEventListener("click", (e) => {
+            e.preventDefault();
+            leaving = true;
+            try { sessionStorage.removeItem(FORM_KEY); } catch (err) { /* private mode */ }
+            location.replace(url);
+          });
+          list.append(box);
+        });
+        formPart.hidden = true;
+        linksPart.hidden = false;
+      }
+
+      $("newLinks").addEventListener("click", () => {
+        view = null;
+        linksPart.hidden = true;
+        formPart.hidden = false;
+        kidsEl.textContent = "";
+        addKid({}, false);
+        hideNotice();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      /* ---- form ---- */
+      const EMAIL_KEY = "mykolai-parent-email";
+      try { emailEl.value = localStorage.getItem(EMAIL_KEY) || ""; } catch (e) { /* private mode */ }
+      emailEl.addEventListener("input", hideNotice);
+      consentEl.addEventListener("change", () => {
+        consentBox.classList.remove("invalid");
+        hideNotice();
+      });
+
+      // The message goes inside the card, which is brought into view
+      function fail(card, key, text) {
+        const input = card.querySelector(`[data-k="${key}"]`);
+        card.classList.add("invalid");
+        input.closest(".field").classList.add("invalid");
+        card.querySelector(".kid-err")?.remove();
+        const msg = document.createElement("p");
+        msg.className = "kid-err";
+        msg.setAttribute("role", "alert");
+        msg.textContent = text;
+        (input.closest(".field-row") || input.closest(".field")).after(msg);
+        scrollToCard(card);
+        kidsEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        input.focus({ preventScroll: true });
+      }
+
+      $("gen").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        errEl.textContent = "";
+        const list = cards();
+        const kids = list.map(kidData);
+        for (let i = 0; i < kids.length; i++) {
+          const k = kids[i], who = list.length > 1 ? ` (дитина ${i + 1})` : "";
+          if (!k.name) return fail(list[i], "name", "Введіть ім'я дитини" + who);
+          if (!k.surname) return fail(list[i], "surname", "Введіть прізвище дитини" + who);
+          if (k.age && !(/^\d{1,2}$/.test(k.age) && +k.age >= 1)) return fail(list[i], "age", "Вік — число від 1 до 99" + who);
+        }
+        const email = emailEl.value.trim();
+        if (!EMAIL_RE.test(email)) { errEl.textContent = "Введіть правильну адресу пошти"; emailEl.focus(); return; }
+        if (!consentEl.checked) { errEl.textContent = "Підтвердіть згоду на обробку даних"; consentBox.classList.add("invalid"); return; }
+        errEl.textContent = "";
+        try { localStorage.setItem(EMAIL_KEY, email); } catch (e) { /* private mode */ }
+        createBtn.disabled = true;
+        createBtn.textContent = "Надсилаю… ⏳";
+        try {
+          await api("api/link", { email, consent: true, kids });
+          showNotice(email, kids.length);
+        } catch (err) {
+          console.error(err);
+          errEl.textContent = err.message === "confirm-limit"
+            ? "На цю пошту сьогодні вже надіслано кілька листів із посиланнями. Знайдіть один із них (перевірте «Спам») або спробуйте завтра."
+            : err.message === "busy"
+            ? "Сьогодні пошта Святого Миколая переповнена 📮 Спробуйте завтра."
+            : "Не вдалося надіслати посилання. Перевірте інтернет і спробуйте ще раз.";
+          createBtn.disabled = false;
+          createBtn.textContent = CREATE_TEXT;
+        }
+      });
+
+      // Keep the page while the tab lives (e.g. after visiting privacy.html and coming back)
+      const FORM_KEY = "mykolai-link-form";
+      window.addEventListener("pagehide", () => {
+        if (leaving) return;
+        try {
+          sessionStorage.setItem(FORM_KEY, JSON.stringify({
+            kids: cards().map(kidData), email: emailEl.value, consent: consentEl.checked, shown, view
+          }));
+        } catch (e) { /* private mode */ }
+      });
+
+      const confirmId = new URLSearchParams(location.search).get("c");
+      let saved = null;
+      if (!confirmId) try { saved = JSON.parse(sessionStorage.getItem(FORM_KEY) || "null"); } catch (e) { /* ignore */ }
+      (saved?.kids?.length ? saved.kids.slice(0, MAX_KIDS) : [{}]).forEach((k) => addKid(k, false));
+      if (saved) {
+        emailEl.value = saved.email || emailEl.value;
+        consentEl.checked = !!saved.consent;
+        if (saved.shown) showNotice(saved.shown.email, saved.shown.n, true);
+        if (saved.view) showLinks(saved.view);
+      }
+      // After a reload: fresh "letter already sent" marks
+      const savedC = saved?.view?.c;
+      if (!confirmId && savedC) api("api/confirm", { c: savedC })
+        .then((r) => { if (view?.c === savedC) showLinks({ email: r.email, kids: r.kids, c: savedC }); })
+        .catch(() => { /* keep the saved list */ });
+
+      if (confirmId) {
+        history.replaceState(null, "", location.pathname);
+        formPart.hidden = true;
+        const wait = $("linksNotice");
+        wait.className = "notice warn";
+        wait.textContent = "Завантажую посилання… ⏳";
+        linksPart.hidden = false;
+        api("api/confirm", { c: confirmId })
+          .then((r) => {
+            wait.className = "notice ok";
+            try { localStorage.setItem(EMAIL_KEY, r.email); } catch (e) { /* private mode */ }
+            emailEl.value = r.email;
+            showLinks({ email: r.email, kids: r.kids, c: confirmId });
+          })
+          .catch((err) => {
+            console.error(err);
+            linksPart.hidden = true;
+            formPart.hidden = false;
+            errEl.textContent = err.message === "expired"
+              ? "Посилання з листа вже не діє. Заповніть форму ще раз — ми надішлемо нові."
+              : "Не вдалося завантажити посилання. Перевірте інтернет і відкрийте посилання з листа ще раз.";
+          });
+      }
+    })();
+    // "Mykolai has heard N children" (Ukrainian plural forms); hidden until there is something to show
+    fetch("/api/stats").then((r) => r.json()).then(({ heard }) => {
+      const n = Number(heard) || 0;
+      if (n < 1) return;
+      const m10 = n % 10, m100 = n % 100;
+      const word = m10 === 1 && m100 !== 11 ? "дитину" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "дитини" : "дітей";
+      const el = document.getElementById("heard");
+      el.textContent = "🎅 Миколай почув уже ";
+      const b = document.createElement("b");
+      b.textContent = n.toLocaleString("uk-UA");
+      el.append(b, " " + word);
+      el.hidden = false;
+    }).catch(() => {});
+  </script>
+</body>
+</html>

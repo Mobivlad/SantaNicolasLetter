@@ -1,0 +1,12 @@
+# Local Netlify folder
+.netlify
+
+# Dependencies
+node_modules/
+
+# Local secrets
+.env
+.env.*
+
+# App artifacts
+published-updates/
