@@ -18,7 +18,7 @@
 
   musicBtn.addEventListener("click", () => { window.Music.toggle(); updateMusicBtn(); });
 
-  $("#openBtn").addEventListener("click", () => {
+  function openLetter() {
     window.Music.start();
     musicBtn.hidden = false;
     updateMusicBtn();
@@ -33,7 +33,11 @@
       growAbout();
       window.scrollTo(0, 0);
     }, reduceMotion ? 50 : 1600);
-  }, { once: true });
+  }
+  let opened = false;
+  for (const btn of [$("#openBtn"), $("#freeBtn")]) {
+    btn.addEventListener("click", () => { if (!opened) { opened = true; openLetter(); } });
+  }
 
   /* ================= Letter form ================= */
   const form = $("#letter");
