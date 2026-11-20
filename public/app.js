@@ -30,7 +30,7 @@
       intro.hidden = true;
       if (linkUsed) return;
       letterScreen.hidden = false;
-      growAbout();
+      growAll();
       window.scrollTo(0, 0);
     }, reduceMotion ? 50 : 1600);
   }
@@ -61,21 +61,24 @@
     li.className = "wish";
     li.innerHTML =
       `<span class="wish-icon" aria-hidden="true">${ICONS[i % ICONS.length]}</span>` +
-      `<input type="text" maxlength="120" enterkeyhint="next" aria-label="Бажання ${i + 1}">` +
+      `<textarea class="wish-text" rows="1" maxlength="120" enterkeyhint="next" aria-label="Бажання ${i + 1}"></textarea>` +
       `<button type="button" class="wish-del" aria-label="Видалити бажання">×</button>`;
-    const input = li.querySelector("input");
+    const input = li.querySelector(".wish-text");
     input.placeholder = PLACEHOLDERS[Math.min(i, PLACEHOLDERS.length - 1)];
     input.value = value || "";
     wishesEl.appendChild(li);
+    grow(input);
     refreshWishes();
     if (focus) input.focus();
   }
+
+  const wishInputs = () => [...wishesEl.querySelectorAll(".wish-text")];
 
   function refreshWishes() {
     const items = [...wishesEl.children];
     items.forEach((li, i) => {
       li.querySelector(".wish-icon").textContent = ICONS[i % ICONS.length];
-      li.querySelector("input").setAttribute("aria-label", `Бажання ${i + 1}`);
+      li.querySelector(".wish-text").setAttribute("aria-label", `Бажання ${i + 1}`);
       li.querySelector(".wish-del").hidden = items.length === 1;
     });
     addWishBtn.disabled = items.length >= MAX_WISHES;
@@ -93,12 +96,19 @@
   });
 
   wishesEl.addEventListener("keydown", (e) => {
-    if (e.key !== "Enter" || !e.target.matches("input")) return;
+    if (e.key !== "Enter" || !e.target.matches(".wish-text")) return;
     e.preventDefault();
     const li = e.target.closest(".wish");
     const next = li.nextElementSibling;
-    if (next) next.querySelector("input").focus();
+    if (next) next.querySelector(".wish-text").focus();
     else if (e.target.value.trim()) addWish("", true);
+  });
+
+  // A wish is one line of text that wraps visually; pasted line breaks become spaces
+  wishesEl.addEventListener("input", (e) => {
+    if (!e.target.matches(".wish-text")) return;
+    if (/[\r\n]/.test(e.target.value)) e.target.value = e.target.value.replace(/\s*[\r\n]+\s*/g, " ");
+    grow(e.target);
   });
 
   // Enter moves to the next editable field
@@ -106,19 +116,30 @@
     if (e.key !== "Enter") return;
     e.preventDefault();
     const next = [ageEl, cityEl].find((f) => f !== el && !f.readOnly && f.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING)
-      || wishesEl.querySelector("input");
+      || wishesEl.querySelector(".wish-text");
     if (next) next.focus();
   }));
   ageEl.addEventListener("input", () => { ageEl.value = ageEl.value.replace(/\D/g, "").slice(0, 2); });
 
-  function growAbout() {
-    aboutEl.style.height = "auto";
-    aboutEl.style.height = aboutEl.scrollHeight + "px";
+  function grow(el) {
+    if (!el.offsetParent) return; // hidden: no layout yet, growAll() runs when shown
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
   }
-  aboutEl.addEventListener("input", growAbout);
+  function growAll() {
+    grow(aboutEl);
+    wishInputs().forEach(grow);
+  }
+  aboutEl.addEventListener("input", () => grow(aboutEl));
+  let lastWidth = window.innerWidth;
+  window.addEventListener("resize", () => {
+    if (window.innerWidth === lastWidth) return; // ignore iOS keyboard / toolbar height changes
+    lastWidth = window.innerWidth;
+    growAll();
+  });
 
   function getWishes() {
-    return [...wishesEl.querySelectorAll("input")].map((i) => i.value.trim()).filter(Boolean);
+    return wishInputs().map((i) => i.value.trim()).filter(Boolean);
   }
 
   function updateSign() {
@@ -129,7 +150,7 @@
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({
         name: nameEl.value, age: ageEl.value, city: cityEl.value, about: aboutEl.value,
-        wishes: [...wishesEl.querySelectorAll("input")].map((i) => i.value),
+        wishes: wishInputs().map((i) => i.value),
         good: goodEl.checked
       }));
     } catch (e) { /* private mode */ }
@@ -222,7 +243,7 @@
     const age = +ageEl.value.trim();
     if (!(age >= 1 && age <= 99)) return fail("age", "Напиши, скільки тобі років 🎂", ageEl);
     if (!cityEl.value.trim()) return fail("city", "Напиши, у якому місті чи селі ти живеш 🏠", cityEl);
-    if (!getWishes().length) return fail("wishes", "Додай хоча б одне бажання 🎁", wishesEl.querySelector("input"));
+    if (!getWishes().length) return fail("wishes", "Додай хоча б одне бажання 🎁", wishesEl.querySelector(".wish-text"));
     if (!goodEl.checked) return fail("good", "Підтверди, що ти був чемним / була чемною 😇");
     return true;
   }
@@ -304,7 +325,7 @@
     loadDraft();
     sent.hidden = true;
     letterScreen.hidden = false;
-    growAbout();
+    growAll();
     window.scrollTo(0, 0);
   });
 
