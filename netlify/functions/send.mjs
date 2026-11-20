@@ -18,7 +18,8 @@ function years(n) {
   return `${n} ${m10 === 1 && m100 !== 11 ? "рік" : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "роки" : "років"}`;
 }
 
-function render({ name, fullName, age, city, about, wishes, sentAt }) {
+// footer: why the parent got this mail (helps spam filters); only for letters sent by the parent's link
+function render({ name, fullName, age, city, about, wishes, sentAt, footer }) {
   const text = [
     `Дорогий Святий Миколаю!`,
     ``,
@@ -33,13 +34,14 @@ function render({ name, fullName, age, city, about, wishes, sentAt }) {
     `✅ Підтверджую, що я був чемним / була чемною весь рік.`,
     ``,
     `З любов'ю, ${name}`,
-    `Надіслано: ${sentAt}`
+    `Надіслано: ${sentAt}`,
+    ...(footer ? [``, `--`, footer] : [])
   ].join("\n");
 
   const li = wishes.map((w) => `<li style="margin:4px 0">${esc(w)}</li>`).join("");
   const html = `<!doctype html><html><body style="margin:0;padding:16px;background:#14234f;font-family:Georgia,'Times New Roman',serif">
 <div style="max-width:560px;margin:0 auto;background:#fdf6e3;border:6px solid #c8102e;border-radius:12px;padding:24px;color:#3b2f4a">
-<h1 style="margin:0 0 16px;font-size:26px;color:#c8102e">Дорогий Святий Миколаю! ✨</h1>
+<h1 style="margin:0 0 16px;font-size:26px;color:#c8102e">Дорогий Святий Миколаю!</h1>
 <p style="margin:8px 0;font-size:17px"><b>Мене звати:</b> ${esc(fullName)}</p>
 <p style="margin:8px 0;font-size:17px"><b>Мені:</b> ${esc(years(Number(age)))}</p>
 <p style="margin:8px 0;font-size:17px"><b>Я живу:</b> ${esc(city)}</p>
@@ -50,7 +52,8 @@ ${about ? `<p style="margin:16px 0 4px;font-size:17px"><b>Про себе:</b></
 <p style="margin:18px 0 8px;font-size:16px">✅ Підтверджую, що я був чемним / була чемною весь рік.</p>
 <p style="margin:18px 0 0;font-size:18px;text-align:right;color:#1d3a8a"><i>З любов'ю, ${esc(name)}</i></p>
 <p style="margin:16px 0 0;font-size:12px;color:#8a7a66">Надіслано: ${esc(sentAt)}</p>
-</div></body></html>`;
+</div>${footer ? `
+<p style="max-width:560px;margin:12px auto 0;font-family:Arial,sans-serif;font-size:12px;line-height:1.4;color:#c9cfe3">${esc(footer)}</p>` : ""}</body></html>`;
   return { text, html };
 }
 
@@ -88,10 +91,15 @@ export default async (req, context) => {
 
   const fullName = surname ? `${name} ${surname}` : name;
   const sentAt = new Date().toLocaleString("uk-UA", { timeZone: "Europe/Kyiv" });
-  const mail = (rcpt, prefix, who) => sendMail({
+  const site = (process.env.URL || new URL(req.url).origin).replace(/^https?:\/\//, "");
+  const mail = (rcpt, prefix, who, footer) => sendMail({
     to: rcpt, subject: `${prefix}Лист Святому Миколаю — ${who}`,
-    ...render({ name, fullName: who, age, city, about, wishes, sentAt })
+    ...render({ name, fullName: who, age, city, about, wishes, sentAt, footer })
   });
+  // Only the parent's letter explains where it came from; free letters and backup copies go to the site owner
+  const parentFooter = fromLink
+    ? `Ви отримали цей лист, бо створили для дитини посилання на сайті ${site}. Щоб наступні листи не потрапляли у «Спам», додайте цю адресу в контакти.`
+    : "";
   const backupTo = process.env.FALLBACK_EMAIL;
   const toBackup = !!backupTo && backupTo.toLowerCase() === to.toLowerCase();
   // Subject tags for the backup mailbox; letters to other parents get no tag
@@ -105,7 +113,7 @@ export default async (req, context) => {
       // Nobody can flood a parent's mailbox, even with a valid link
       if (fromLink && !(await takeDaily("s", to, LETTERS_PER_DAY))) throw Object.assign(new Error(), { reply: [429, "limit"] });
       if (!(await spendMail(!fromLink))) throw Object.assign(new Error(), { reply: [503, "busy"] });
-      main = await mail(to, mainPrefix, fullName);
+      main = await mail(to, mainPrefix, fullName, toBackup ? "" : parentFooter);
     } catch (e) {
       if (fromLink) await releaseLink(body.l);
       throw e;

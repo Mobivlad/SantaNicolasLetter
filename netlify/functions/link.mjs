@@ -25,21 +25,23 @@ function linksMail(pageUrl, kids, until) {
     ...kids.map((k) => `${k.name} ${k.surname}: ${k.url}`),
     "",
     "Ім'я дитини вже буде вписане, а лист прийде на цю пошту.",
+    "Щоб лист дитини не потрапив у «Спам», додайте адресу відправника в контакти.",
     `${many ? "Поділитися посиланнями або скопіювати їх" : "Поділитися посиланням або скопіювати його"}: ${pageUrl}`,
     `${many ? "Кожне посилання — для одного листа. Посилання працюють" : "Посилання — для одного листа й працює"} до ${until}.`,
     "",
     "Якщо ви не просили цих посилань, просто проігноруйте цей лист: без них ніхто не зможе надіслати листи на вашу пошту."
   ].join("\n");
   const rows = kids.map((k) => `<div style="margin:0 0 12px;padding:12px 14px;border:2px dashed #e0cfa6;border-radius:10px;background:#fffdf6">
-<div style="font-size:18px;font-weight:bold;color:#3b2f4a">🧒 ${esc(k.name)} ${esc(k.surname)}</div>
+<div style="font-size:18px;font-weight:bold;color:#3b2f4a">${esc(k.name)} ${esc(k.surname)}</div>
 <a href="${esc(k.url)}" style="font-family:Arial,sans-serif;font-size:16px;font-weight:bold;color:#1c3a8a;word-break:break-all">${esc(k.url)}</a></div>`).join("");
   const html = `<!doctype html><html><body style="margin:0;padding:16px;background:#14234f;font-family:Georgia,'Times New Roman',serif">
 <div style="max-width:560px;margin:0 auto;background:#fdf6e3;border:6px solid #c8102e;border-radius:12px;padding:24px;color:#3b2f4a;font-size:17px;line-height:1.5">
-<h1 style="margin:0 0 14px;font-size:24px;color:#c8102e">${many ? "Посилання для ваших дітей" : "Посилання для дитини"} 🎅</h1>
+<h1 style="margin:0 0 14px;font-size:24px;color:#c8102e">${many ? "Посилання для ваших дітей" : "Посилання для дитини"}</h1>
 <p style="margin:0 0 14px">${many ? "Надішліть кожній дитині її посилання" : "Надішліть це посилання дитині"}: ім'я вже буде вписане, а лист Святому Миколаю прийде на цю пошту.</p>
 ${rows}
-<p style="margin:20px 0;text-align:center"><a href="${esc(pageUrl)}" style="display:inline-block;padding:14px 26px;border-radius:999px;background:#c8102e;color:#fff;text-decoration:none;font-weight:bold">${many ? "Поділитися посиланнями" : "Поділитися посиланням"} 📤</a></p>
+<p style="margin:20px 0;text-align:center"><a href="${esc(pageUrl)}" style="display:inline-block;padding:14px 26px;border-radius:999px;background:#c8102e;color:#fff;text-decoration:none;font-weight:bold">${many ? "Поділитися посиланнями" : "Поділитися посиланням"}</a></p>
 <p style="margin:0 0 12px;font-size:15px">${many ? "Кожне посилання — для одного листа. Посилання працюють" : "Посилання — для одного листа й працює"} до ${esc(until)}.</p>
+<p style="margin:0 0 12px;font-size:15px">Щоб лист дитини не потрапив у «Спам», додайте адресу відправника в контакти.</p>
 <p style="margin:0;font-size:13px;color:#6b5d4c">Якщо ви не просили цих посилань, просто проігноруйте цей лист: без них ніхто не зможе надіслати листи на вашу пошту.</p>
 </div></body></html>`;
   return { text, html };
